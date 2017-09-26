@@ -5,10 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bibliotheek.Controllers
 {
-    [Route("/books")]
     public class BookController : Controller
     {
-        [HttpGet]
+        [HttpGet("/books")]
         public IActionResult Index()
         {
             var model = new BookListViewModel();
@@ -20,5 +19,10 @@ namespace Bibliotheek.Controllers
             return View(model);
         }
 
+        [HttpGet("/books/:id")]
+        public IActionResult Detail([FromRoute]int id)
+        {
+            return View();
+        }
     }
 }
