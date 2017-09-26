@@ -1,29 +1,13 @@
-﻿@model BookListViewModel
+﻿@model BookDetailViewModel
 
 @{
-    ViewData["Title"] = "Overzicht boeken";
+    ViewData["Title"] = "Detail " + Model.Title + ", door " + Model.Author;
 }
 
 <div class="row">
     <div class="col-md-12">
-        <table class="table">
-            <thead>
-            <tr>
-                <td>CreationDate</td>
-                <td>Title</td>
-                <td>Author</td>
-                <td>ISBN</td>
-            </tr>
-            </thead>
-            @foreach (var book in Model.Books)
-            {
-                <tr>
-                    <td>@book.CreationDate</td>
-                    <td>@book.Title</td>
-                    <td>@book.Author</td>
-                    <td>@book.ISBN</td>
-                </tr>
-            }
-        </table>
+        <div>
+            De titel is @Model.Title , de auteur is @Model.Author en de isbn is @Model.ISBN
+        </div>
     </div>
 </div>

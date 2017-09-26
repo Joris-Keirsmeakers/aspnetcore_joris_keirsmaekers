@@ -19,10 +19,15 @@ namespace Bibliotheek.Controllers
             return View(model);
         }
 
-        [HttpGet("/books/:id")]
+        [HttpGet("/books/{id}")]
         public IActionResult Detail([FromRoute]int id)
         {
-            return View();
+            var bookDetailViewModel = new BookDetailViewModel();
+            bookDetailViewModel.Author = "author " + id;
+            bookDetailViewModel.ISBN = "isbn" + id;
+            bookDetailViewModel.Title = "title" + id;
+
+            return View(bookDetailViewModel);
         }
     }
 }
