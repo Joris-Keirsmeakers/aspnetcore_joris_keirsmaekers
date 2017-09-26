@@ -6,11 +6,24 @@
 
 <div class="row">
     <div class="col-md-12">
-        <ul>
+        <table class="table">
+            <thead>
+            <tr>
+                <td>CreationDate</td>
+                <td>Title</td>
+                <td>Author</td>
+                <td>ISBN</td>
+            </tr>
+            </thead>
             @foreach (var book in Model.Books)
             {
-                <li>@book</li>
+                <tr>
+                    <td>@book.CreationDate</td>
+                    <td>@book.Title</td>
+                    <td>@book.Author</td>
+                    <td>@book.ISBN</td>
+                </tr>
             }
-        </ul>
+        </table>
     </div>
 </div>
