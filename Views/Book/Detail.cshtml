@@ -1,0 +1,7 @@
+﻿@model BookDetailModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<h1>@Model.Title by @Model.Author</h1>
+<p> ISBN number: @Model.ISBN, Added to this library on: @Model.CreatedOn.ToString("d")</p>
