@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bibliotheek.Entities;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Bibliotheek.Data
 {
@@ -10,6 +12,10 @@ namespace Bibliotheek.Data
     {
         public static void InitializeDatabase(EntityContext entityContext)
         {
+            if (((entityContext.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists()).GetValueOrDefault(false))
+            {
+                return;
+            }
             var authors = new List<Author>();
             for (var i = 0; i < 20; i++)
             {

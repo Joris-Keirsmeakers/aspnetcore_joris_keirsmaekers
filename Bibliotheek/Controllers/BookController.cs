@@ -26,11 +26,12 @@ namespace Bibliotheek.Controllers
             foreach (var book in allBooks)
             {
                 var vm = new BookDetailViewModel();
+                vm.Id = book.Id;
                 vm.Title = book.Title;
                 vm.Author = "";
                 foreach (var ba in book.Authors)
                 {
-                    vm.Author = ba.Author.FirstName + " " + ba.Author.LastName;
+                    vm.Author += $"{ba.Author.FullName}, ";
                 }
                 model.Books.Add(vm);
             }
@@ -40,7 +41,18 @@ namespace Bibliotheek.Controllers
         [HttpGet("/books/{id}")]
         public IActionResult Detail([FromRoute] int id)
         {
+            var book = _entityContext.Books.Include(x => x.Authors).ThenInclude(x => x.Author).FirstOrDefault(x => x.Id == id);
+            if (book == null)
+            {
+                return NotFound();
+            }
             var vm = new BookDetailViewModel();
+            foreach (var ba in book.Authors)
+            {
+                vm.Author += $"{ba.Author.FullName}, ";
+            }
+            vm.Title = book.Title;
+            vm.Id = book.Id;
             return View(vm);
         }
     }
