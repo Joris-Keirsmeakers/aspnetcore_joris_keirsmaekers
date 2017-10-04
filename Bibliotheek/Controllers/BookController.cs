@@ -22,13 +22,15 @@ namespace Bibliotheek.Controllers
         {
             var model = new BookListViewModel();
             model.Books = new List<BookDetailViewModel>();
-            var allBooks = _entityContext.Books.Include(x => x.Authors).ThenInclude(x => x.Author).ToList();
+            var allBooks = _entityContext.Books.OrderBy(x => x.Title).Include(x => x.Authors).ThenInclude(x => x.Author).ToList();
             foreach (var book in allBooks)
             {
-                var vm = new BookDetailViewModel();
-                vm.Id = book.Id;
-                vm.Title = book.Title;
-                vm.Author = "";
+                var vm = new BookDetailViewModel
+                {
+                    Id = book.Id,
+                    Title = book.Title,
+                    Author = ""
+                };
                 foreach (var ba in book.Authors)
                 {
                     vm.Author += $"{ba.Author.FullName}, ";
