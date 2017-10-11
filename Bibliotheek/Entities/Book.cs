@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Bibliotheek.Entities
 {
@@ -12,7 +10,6 @@ namespace Bibliotheek.Entities
         public DateTime CreationDate { get; set; }
         public virtual List<AuthorBook> Authors { get; set; }
         public virtual Genre Genre { get; set; }
-        public string ISBN;
-
+        public string ISBN { get; set; }
     }
 }

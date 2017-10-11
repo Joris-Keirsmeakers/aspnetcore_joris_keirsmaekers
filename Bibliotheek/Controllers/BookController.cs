@@ -25,7 +25,15 @@ namespace Bibliotheek.Controllers
             var model = new BookListViewModel {Books = new List<BookDetailViewModel>()};
             var allBooks = GetFullGraph().OrderBy(x => x.Title)
                 .ToList();
-            model.Books.AddRange(allBooks.Select(ConvertBook));
+            model.Books.AddRange(allBooks.Select(book => new BookDetailViewModel()
+            {
+                Id = book.Id,
+                Title = book.Title,
+                CreationDate = book.CreationDate,
+                Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
+                Genre = book.Genre?.Name,
+                ISBN = book.ISBN
+            }).ToList());
             return View(model);
         }
 
@@ -52,7 +60,7 @@ namespace Bibliotheek.Controllers
 
 
         [HttpPost("/books")]
-        public IActionResult Persist([FromForm] BookDetailViewModel vm)
+        public IActionResult Persist([FromForm] BookEditDetailViewModel vm)
         {
             if (ModelState.IsValid)
             {
@@ -78,18 +86,29 @@ namespace Bibliotheek.Controllers
         }
 
 
-        private static BookDetailViewModel ConvertBook(Book book)
+        private static BookEditDetailViewModel ConvertBook(Book book)
         {
-            var vm = new BookDetailViewModel
+            var vm = new BookEditDetailViewModel
             {
                 Id = book.Id,
                 Title = book.Title,
                 CreationDate = book.CreationDate,
-                Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
                 Genre = book.Genre?.Name,
                 GenreId = book.Genre?.Id
             };
             return vm;
+        }
+
+        [HttpPost("/books/delete/{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var toDelete = _entityContext.Books.FirstOrDefault(x => x.Id == id);
+            if (toDelete != null)
+            {
+                _entityContext.Books.Remove(toDelete);
+                _entityContext.SaveChanges();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Bibliotheek.Data
                 {
                     genre = genres[2];
                 }
-                books.Add(new Book {Title = $"Book {i}", Authors = new List<AuthorBook> {authorBook}, Genre = genre});
+                books.Add(new Book {Title = $"Book {i}", Authors = new List<AuthorBook> {authorBook}, Genre = genre, CreationDate = DateTime.Now.AddYears(-1).AddDays(i)});
             }
 
             var me = new Author {FirstName = "Raf", LastName = "Ceuls"};
