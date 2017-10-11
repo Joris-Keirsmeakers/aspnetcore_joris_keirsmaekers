@@ -1,4 +1,5 @@
-﻿using Bibliotheek.Data;
+﻿using System;
+using Bibliotheek.Data;
 using Bibliotheek.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,7 +21,7 @@ namespace Bibliotheek
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<EntityContext>(options => options.UseSqlite("Filename=./books.db"));
+            services.AddDbContext<EntityContext>(options => options.UseInMemoryDatabase("Books"));
             services.AddMvc();
         }
 

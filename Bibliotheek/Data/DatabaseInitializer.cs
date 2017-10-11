@@ -12,10 +12,15 @@ namespace Bibliotheek.Data
     {
         public static void InitializeDatabase(EntityContext entityContext)
         {
-            if (((entityContext.GetService<IDatabaseCreator>() as RelationalDatabaseCreator)?.Exists()).GetValueOrDefault(false))
+            entityContext.Database.EnsureCreated();
+
+            var genres = new List<Genre>
             {
-                return;
-            }
+                new Genre() {Name = "Horror"},
+                new Genre() {Name = "Romcom"},
+                new Genre() {Name = "Klassieker"}
+            };
+
             var authors = new List<Author>();
             for (var i = 0; i < 20; i++)
             {
@@ -29,13 +34,26 @@ namespace Bibliotheek.Data
                 {
                     Author = authors[i]
                 };
-                books.Add(new Book {Title = $"Book {i}", Authors = new List<AuthorBook> {authorBook}});
+                Genre genre = null;
+                if (i % 4 == 0)
+                {
+                    genre = genres[0];
+                }
+                else if (i % 3 == 0)
+                {
+                    genre = genres[1];
+                }
+                else if (i % 2 == 0)
+                {
+                    genre = genres[2];
+                }
+                books.Add(new Book {Title = $"Book {i}", Authors = new List<AuthorBook> {authorBook}, Genre = genre});
             }
 
             var me = new Author {FirstName = "Raf", LastName = "Ceuls"};
             books[0].Authors.Add(new AuthorBook() { Author = me});
-
-            entityContext.Database.EnsureCreated();
+            
+            entityContext.Genre.AddRange(genres);
             entityContext.Authors.AddRange(authors);
             entityContext.Books.AddRange(books);
             entityContext.SaveChanges();

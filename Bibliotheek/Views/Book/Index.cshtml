@@ -13,6 +13,7 @@
                 <td>Author</td>
                 <td>Created At</td>
                 <td>ISBN</td>
+                <td>Genre</td>
             </tr>
             </thead>
             @foreach (var book in Model.Books)
@@ -22,6 +23,7 @@
                     <td>@book.Author</td>
                     <td>@book.CreationDate.ToLongDateString()</td>
                     <td>@book.ISBN</td>
+                    <td>@book.Genre</td>
                 </tr>
             }
         </table>

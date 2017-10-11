@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Bibliotheek.Data;
+using Bibliotheek.Entities;
 using Bibliotheek.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Bibliotheek.Controllers
 {
@@ -20,42 +21,60 @@ namespace Bibliotheek.Controllers
         [HttpGet("/books")]
         public IActionResult Index()
         {
-            var model = new BookListViewModel();
-            model.Books = new List<BookDetailViewModel>();
-            var allBooks = _entityContext.Books.OrderBy(x => x.Title).Include(x => x.Authors).ThenInclude(x => x.Author).ToList();
-            foreach (var book in allBooks)
-            {
-                var vm = new BookDetailViewModel
-                {
-                    Id = book.Id,
-                    Title = book.Title,
-                    Author = ""
-                };
-                foreach (var ba in book.Authors)
-                {
-                    vm.Author += $"{ba.Author.FullName}, ";
-                }
-                model.Books.Add(vm);
-            }
+            var model = new BookListViewModel {Books = new List<BookDetailViewModel>()};
+            var allBooks = GetFullGraph().OrderBy(x => x.Title)
+                .ToList();
+            model.Books.AddRange(allBooks.Select(ConvertBook));
             return View(model);
+        }
+
+        private static BookDetailViewModel ConvertBook(Book book)
+        {
+            var vm = new BookDetailViewModel
+            {
+                Id = book.Id,
+                Title = book.Title,
+                CreationDate = book.CreationDate,
+                Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
+                // de ?. zorgt er voor dat al er géén genre is je een null krijgt ipv een nullreference exception.
+                Genre = book.Genre?.Name
+            };
+            return vm;
         }
 
         [HttpGet("/books/{id}")]
         public IActionResult Detail([FromRoute] int id)
         {
-            var book = _entityContext.Books.Include(x => x.Authors).ThenInclude(x => x.Author).FirstOrDefault(x => x.Id == id);
+            var book = GetFullGraph()
+                .FirstOrDefault(x => x.Id == id);
             if (book == null)
-            {
                 return NotFound();
-            }
-            var vm = new BookDetailViewModel();
-            foreach (var ba in book.Authors)
+
+            return View(ConvertBook(book));
+        }
+
+
+        [HttpPost("/books")]
+        public IActionResult Persist([FromForm] BookDetailViewModel vm)
+        {
+            if (ModelState.IsValid)
             {
-                vm.Author += $"{ba.Author.FullName}, ";
+                var book = vm.Id == 0 ? new Book() : _entityContext.Books.FirstOrDefault(x => x.Id == vm.Id);
+                book.Title = vm.Title;
+                if (vm.Id == 0)
+                    _entityContext.Books.Add(book);
+                else
+                    _entityContext.Books.Update(book);
+                _entityContext.SaveChanges();
+
+                return Redirect("/books");
             }
-            vm.Title = book.Title;
-            vm.Id = book.Id;
-            return View(vm);
+            return View("Detail", vm);
+        }
+
+        private IIncludableQueryable<Book, Author> GetFullGraph()
+        {
+            return _entityContext.Books.Include(x => x.Genre).Include(x => x.Authors).ThenInclude(x => x.Author);
         }
     }
 }

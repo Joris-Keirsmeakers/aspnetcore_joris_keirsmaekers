@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -8,6 +9,8 @@ namespace Bibliotheek.Entities
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public DateTime CreationDate { get; set; }
         public virtual List<AuthorBook> Authors { get; set; }
+        public Genre Genre { get; set; }
     }
 }
