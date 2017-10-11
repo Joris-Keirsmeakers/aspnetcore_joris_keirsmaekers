@@ -4,6 +4,7 @@ using Bibliotheek.Data;
 using Bibliotheek.Entities;
 using Bibliotheek.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -28,19 +29,6 @@ namespace Bibliotheek.Controllers
             return View(model);
         }
 
-        private static BookDetailViewModel ConvertBook(Book book)
-        {
-            var vm = new BookDetailViewModel
-            {
-                Id = book.Id,
-                Title = book.Title,
-                CreationDate = book.CreationDate,
-                Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
-                // de ?. zorgt er voor dat al er géén genre is je een null krijgt ipv een nullreference exception.
-                Genre = book.Genre?.Name
-            };
-            return vm;
-        }
 
         [HttpGet("/books/{id}")]
         public IActionResult Detail([FromRoute] int id)
@@ -48,9 +36,18 @@ namespace Bibliotheek.Controllers
             var book = GetFullGraph()
                 .FirstOrDefault(x => x.Id == id);
             if (book == null)
+            {
                 return NotFound();
+            }
 
-            return View(ConvertBook(book));
+            var vm = ConvertBook(book);
+            vm.Genres = _entityContext.Genre.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Id.ToString(),
+                }
+            ).ToList();
+            return View(vm);
         }
 
 
@@ -59,8 +56,11 @@ namespace Bibliotheek.Controllers
         {
             if (ModelState.IsValid)
             {
-                var book = vm.Id == 0 ? new Book() : _entityContext.Books.FirstOrDefault(x => x.Id == vm.Id);
+                var book = vm.Id == 0 ? new Book() : GetFullGraph().FirstOrDefault(x => x.Id == vm.Id);
                 book.Title = vm.Title;
+                book.Genre = vm.GenreId.HasValue ? _entityContext.Genre.FirstOrDefault(x => x.Id == vm.GenreId) : null;
+                book.CreationDate = vm.CreationDate;
+                book.ISBN = vm.ISBN;
                 if (vm.Id == 0)
                     _entityContext.Books.Add(book);
                 else
@@ -75,6 +75,21 @@ namespace Bibliotheek.Controllers
         private IIncludableQueryable<Book, Author> GetFullGraph()
         {
             return _entityContext.Books.Include(x => x.Genre).Include(x => x.Authors).ThenInclude(x => x.Author);
+        }
+
+
+        private static BookDetailViewModel ConvertBook(Book book)
+        {
+            var vm = new BookDetailViewModel
+            {
+                Id = book.Id,
+                Title = book.Title,
+                CreationDate = book.CreationDate,
+                Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
+                Genre = book.Genre?.Name,
+                GenreId = book.Genre?.Id
+            };
+            return vm;
         }
     }
 }

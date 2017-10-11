@@ -11,6 +11,8 @@ namespace Bibliotheek.Entities
         public string Title { get; set; }
         public DateTime CreationDate { get; set; }
         public virtual List<AuthorBook> Authors { get; set; }
-        public Genre Genre { get; set; }
+        public virtual Genre Genre { get; set; }
+        public string ISBN;
+
     }
 }
