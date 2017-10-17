@@ -1,30 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Bibliotheek.Data;
 using Bibliotheek.Entities;
 using Bibliotheek.Models;
+using Bibliotheek.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace Bibliotheek.Controllers
 {
     public class BookController : Controller
     {
-        private readonly EntityContext _entityContext;
+        private readonly IBookService _bookService;
 
-        public BookController(EntityContext entityContext)
+        public BookController(IBookService bookService)
         {
-            _entityContext = entityContext;
+            _bookService = bookService;
         }
 
         [HttpGet("/books")]
         public IActionResult Index()
         {
             var model = new BookListViewModel {Books = new List<BookDetailViewModel>()};
-            var allBooks = GetFullGraph().OrderBy(x => x.Title)
-                .ToList();
+            var allBooks = _bookService.GetAllBooks();
             model.Books.AddRange(allBooks.Select(ConvertBookToBookDetailViewModel).ToList());
             return View(model);
         }
@@ -46,15 +43,14 @@ namespace Bibliotheek.Controllers
         [HttpGet("/books/{id}")]
         public IActionResult Detail([FromRoute] int id)
         {
-            var book = GetFullGraph()
-                .FirstOrDefault(x => x.Id == id);
+            var book = _bookService.GetBookById(id);
             if (book == null)
             {
                 return NotFound();
             }
 
             var vm = ConvertBookToEditDetailViewModel(book);
-            vm.Genres = _entityContext.Genre.Select(x => new SelectListItem
+            vm.Genres = _bookService.GetAllGenres().Select(x => new SelectListItem
                 {
                     Text = x.Name,
                     Value = x.Id.ToString(),
@@ -69,25 +65,16 @@ namespace Bibliotheek.Controllers
         {
             if (ModelState.IsValid)
             {
-                var book = vm.Id == 0 ? new Book() : GetFullGraph().FirstOrDefault(x => x.Id == vm.Id);
+                var book = vm.Id == 0 ? new Book() : _bookService.GetBookById(vm.Id);
                 book.Title = vm.Title;
-                book.Genre = vm.GenreId.HasValue ? _entityContext.Genre.FirstOrDefault(x => x.Id == vm.GenreId) : null;
+                book.Genre = vm.GenreId.HasValue ? _bookService.GetGenreById(vm.GenreId.Value) : null;
                 book.CreationDate = vm.CreationDate;
                 book.ISBN = vm.ISBN;
-                if (vm.Id == 0)
-                    _entityContext.Books.Add(book);
-                else
-                    _entityContext.Books.Update(book);
-                _entityContext.SaveChanges();
+                _bookService.Persist(book);
 
                 return Redirect("/books");
             }
             return View("Detail", vm);
-        }
-
-        private IIncludableQueryable<Book, Author> GetFullGraph()
-        {
-            return _entityContext.Books.Include(x => x.Genre).Include(x => x.Authors).ThenInclude(x => x.Author);
         }
 
 
@@ -107,12 +94,7 @@ namespace Bibliotheek.Controllers
         [HttpPost("/books/delete/{id}")]
         public IActionResult Delete([FromRoute] int id)
         {
-            var toDelete = _entityContext.Books.FirstOrDefault(x => x.Id == id);
-            if (toDelete != null)
-            {
-                _entityContext.Books.Remove(toDelete);
-                _entityContext.SaveChanges();
-            }
+            _bookService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
     }

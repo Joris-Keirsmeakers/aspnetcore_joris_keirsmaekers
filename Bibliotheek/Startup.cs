@@ -1,4 +1,5 @@
 ﻿using System;
+using Bibliotheek.Controllers;
 using Bibliotheek.Data;
 using Bibliotheek.Entities;
 using Microsoft.AspNetCore.Builder;
@@ -22,6 +23,7 @@ namespace Bibliotheek
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EntityContext>(options => options.UseInMemoryDatabase("Books"));
+            services.AddSingleton<IBookService, BookService>();
             services.AddMvc();
         }
 

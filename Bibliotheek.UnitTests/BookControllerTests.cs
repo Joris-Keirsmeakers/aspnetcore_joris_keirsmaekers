@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using Bibliotheek.Controllers;
 using Bibliotheek.Data;
 using Bibliotheek.Entities;
+using Bibliotheek.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace Bibliotheek.UnitTests
@@ -11,14 +14,13 @@ namespace Bibliotheek.UnitTests
     public class BookControllerTests
     {
         private readonly BookController _controller;
-        private readonly EntityContext _entityContext;
+        private readonly Mock<IBookService> _bookService;
 
         public BookControllerTests()
         {
-            _entityContext = 
-                new EntityContext(new DbContextOptionsBuilder<EntityContext>().UseInMemoryDatabase(Guid.NewGuid().ToString()).Options);
-
-            _controller = new BookController(_entityContext);
+            _bookService =
+                new Mock<IBookService>(MockBehavior.Strict);
+            _controller = new BookController(_bookService.Object);
         }
 
         [Fact]
@@ -37,7 +39,6 @@ namespace Bibliotheek.UnitTests
             var comingOut = _controller.ConvertBookToEditDetailViewModel(goingIn);
             Assert.Equal("Genre", comingOut.Genre);
             //TODO: check the other properties
-            
         }
 
         [Fact]
@@ -47,5 +48,18 @@ namespace Bibliotheek.UnitTests
         }
 
         //TODO create a test for ConvertBookToBookDetailViewModel
+
+        [Fact]
+        public void WeCanUseAMoqForDbAccess()
+        {
+            _bookService.Setup(x => x.GetBookById(12)).Returns(new Book {Id = 12}).Verifiable();
+            _bookService.Setup(x => x.GetAllGenres()).Returns(new List<Genre>()).Verifiable();
+            //what's the difference between line 57 & 58?
+            var actionResult = (ViewResult) _controller.Detail(12);
+            var model = actionResult.Model as BookEditDetailViewModel;
+            Assert.NotNull(model);
+            Assert.Equal(12, model.Id);
+            _bookService.Verify();
+        }
     }
 }

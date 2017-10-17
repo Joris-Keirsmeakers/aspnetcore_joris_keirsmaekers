@@ -3,7 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bibliotheek.Data
 {
-    public class EntityContext : DbContext
+    public interface IEntityContext
+    {
+        DbSet<Author> Authors { get; set; }
+        DbSet<Book> Books { get; set; }
+        DbSet<Genre> Genre { get; set; }
+    }
+
+    public class EntityContext : DbContext, IEntityContext
     {
         public EntityContext(DbContextOptions options) : base(options)
         {
