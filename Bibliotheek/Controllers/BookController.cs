@@ -25,7 +25,13 @@ namespace Bibliotheek.Controllers
             var model = new BookListViewModel {Books = new List<BookDetailViewModel>()};
             var allBooks = GetFullGraph().OrderBy(x => x.Title)
                 .ToList();
-            model.Books.AddRange(allBooks.Select(book => new BookDetailViewModel()
+            model.Books.AddRange(allBooks.Select(ConvertBookToBookDetailViewModel).ToList());
+            return View(model);
+        }
+
+        public BookDetailViewModel ConvertBookToBookDetailViewModel(Book book)
+        {
+            return new BookDetailViewModel()
             {
                 Id = book.Id,
                 Title = book.Title,
@@ -33,8 +39,7 @@ namespace Bibliotheek.Controllers
                 Author = string.Join(";", book.Authors.Select(x => x.Author.FullName)),
                 Genre = book.Genre?.Name,
                 ISBN = book.ISBN
-            }).ToList());
-            return View(model);
+            };
         }
 
 
@@ -48,7 +53,7 @@ namespace Bibliotheek.Controllers
                 return NotFound();
             }
 
-            var vm = ConvertBook(book);
+            var vm = ConvertBookToEditDetailViewModel(book);
             vm.Genres = _entityContext.Genre.Select(x => new SelectListItem
                 {
                     Text = x.Name,
@@ -86,7 +91,7 @@ namespace Bibliotheek.Controllers
         }
 
 
-        private static BookEditDetailViewModel ConvertBook(Book book)
+        public BookEditDetailViewModel ConvertBookToEditDetailViewModel(Book book)
         {
             var vm = new BookEditDetailViewModel
             {
