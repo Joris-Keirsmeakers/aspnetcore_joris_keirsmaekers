@@ -26,7 +26,7 @@ namespace Bibliotheek.Controllers
             return View(model);
         }
 
-        public BookDetailViewModel ConvertBookToBookDetailViewModel(Book book)
+        protected BookDetailViewModel ConvertBookToBookDetailViewModel(Book book)
         {
             return new BookDetailViewModel()
             {

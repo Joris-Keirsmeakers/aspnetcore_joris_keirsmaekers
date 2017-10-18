@@ -24,7 +24,7 @@ namespace Bibliotheek
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<EntityContext>(options => options.UseInMemoryDatabase("Books"));
-            services.AddSingleton<IBookService, BookService>();
+            services.AddScoped<IBookService, BookService>();
             services.AddMvc();
         }
 
