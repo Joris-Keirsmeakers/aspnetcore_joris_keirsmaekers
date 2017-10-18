@@ -26,6 +26,15 @@ namespace Bibliotheek.Controllers
             return View(model);
         }
 
+        [HttpGet("/api/books")]
+        public IActionResult IndexAsJson()
+        {
+            var model = new BookListViewModel { Books = new List<BookDetailViewModel>() };
+            var allBooks = _bookService.GetAllBooks();
+            model.Books.AddRange(allBooks.Select(ConvertBookToBookDetailViewModel).ToList());
+            return new JsonResult(model);
+        }
+
         protected BookDetailViewModel ConvertBookToBookDetailViewModel(Book book)
         {
             return new BookDetailViewModel()
