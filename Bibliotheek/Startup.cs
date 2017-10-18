@@ -2,6 +2,7 @@
 using Bibliotheek.Controllers;
 using Bibliotheek.Data;
 using Bibliotheek.Entities;
+using Bibliotheek.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
