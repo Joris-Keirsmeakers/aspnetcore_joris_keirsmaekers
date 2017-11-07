@@ -18,8 +18,10 @@ namespace aspnetcore_keirsmaekers_joris.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
-            return View();
+            var model = new AboutModel();
+            model.Name = "Joris";
+            model.DaysUntillBirthday = 2.0;
+            return View(model);
         }
 
         public IActionResult Contact()

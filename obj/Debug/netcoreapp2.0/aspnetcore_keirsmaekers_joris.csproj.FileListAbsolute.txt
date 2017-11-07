@@ -1,0 +1,11 @@
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\bin\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.deps.json
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\bin\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.runtimeconfig.json
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\bin\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.runtimeconfig.dev.json
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\bin\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.dll
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\bin\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.pdb
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.csprojResolveAssemblyReference.cache
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.csproj.CoreCompileInputs.cache
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.AssemblyInfoInputs.cache
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.AssemblyInfo.cs
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.dll
+C:\Users\Gebruiker\Documents\Visual Studio 2017\Projects\aspnetcore_keirsmaekers_joris\aspnetcore_keirsmaekers_joris\obj\Debug\netcoreapp2.0\aspnetcore_keirsmaekers_joris.pdb
